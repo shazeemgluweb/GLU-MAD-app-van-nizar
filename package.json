@@ -9,6 +9,7 @@
         "monaca-plugin-monaca-core": "3.3.0",
         "socket.io": "^2.3.0"
     },
+    "main": "index.js",
     "cordova": {
         "plugins": {
             "cordova-custom-config": {},
@@ -19,7 +20,8 @@
     },
     "scripts": {
         "monaca:preview": "npm run dev",
-        "dev": "browser-sync start -s www/ --watch --port 8080 --ui-port 8081"
+        "dev": "browser-sync start -s www/ --watch --port 8080 --ui-port 8081",
+        "start": "node index"
     },
     "devDependencies": {
         "browser-sync": "^2.26.7",
