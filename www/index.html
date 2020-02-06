@@ -94,7 +94,7 @@
             cameraTrigger = document.querySelector("#camera--trigger")
         function cameraStart() {
             navigator.mediaDevices
-                .mozgetUserMedia(constraints)
+                .getUserMedia(constraints)
                 .then(function(stream) {
                 track = stream.getTracks()[0];
                 cameraView.srcObject = stream;
