@@ -13,6 +13,7 @@
         .catch(e => console.log(e));
     }
   </script>
+  <link rel="manifest" href="/manifest.json">
 
   <link rel="stylesheet" href="components/loader.css">
   <link rel="stylesheet" href="lib/onsenui/css/onsenui.css">
@@ -29,7 +30,6 @@
       document.documentElement.setAttribute('onsflag-iphonex-landscape', '');
     }
   </script>
-  <link rel="manifest" href="/manifest.json">
 </head>
   <body>
     <div class="toolbar toolbar--material">
@@ -58,5 +58,46 @@
         </span>
       </div>
     </div>
+    
+<video autoplay></video>
+<p><button class="capture-button">Capture video</button>
+<p><button id="cssfilters-apply">Apply CSS filter</button></p>
+
+<script>
+const captureVideoButton =
+  document.querySelector('#cssfilters .capture-button');
+const cssFiltersButton =
+  document.querySelector('#cssfilters-apply');
+const video =
+  document.querySelector('#cssfilters video');
+
+let filterIndex = 0;
+const filters = [
+  'grayscale',
+  'sepia',
+  'blur',
+  'brightness',
+  'contrast',
+  'hue-rotate',
+  'hue-rotate2',
+  'hue-rotate3',
+  'saturate',
+  'invert',
+  ''
+];
+
+captureVideoButton.onclick = function() {
+  navigator.mediaDevices.getUserMedia(constraints).
+    then(handleSuccess).catch(handleError);
+};
+
+cssFiltersButton.onclick = video.onclick = function() {
+  video.className = filters[filterIndex++ % filters.length];
+};
+
+function handleSuccess(stream) {
+  video.srcObject = stream;
+}
+</script>
   </body>
 </html>
