@@ -31,46 +31,86 @@
     }
   </script>
 </head>
-  <body>
-    <video autoplay></video>
-    <p><button class="capture-button">Capture brad pitt</button>
-    <p><button id="cssfilters-apply">Apply CSS filter</button></p>
-    
-    <script>
-    const captureVideoButton =
-      document.querySelector('#cssfilters .capture-button');
-    const cssFiltersButton =
-      document.querySelector('#cssfilters-apply');
-    const video =
-      document.querySelector('#cssfilters video');
-    
-    let filterIndex = 0;
-    const filters = [
-      'grayscale',
-      'sepia',
-      'blur',
-      'brightness',
-      'contrast',
-      'hue-rotate',
-      'hue-rotate2',
-      'hue-rotate3',
-      'saturate',
-      'invert',
-      ''
-    ];
-    
-    captureVideoButton.onclick = function() {
-      navigator.mediaDevices.getUserMedia(constraints).
-        then(handleSuccess).catch(handleError);
-    };
-    
-    cssFiltersButton.onclick = video.onclick = function() {
-      video.className = filters[filterIndex++ % filters.length];
-    };
-    
-    function handleSuccess(stream) {
-      video.srcObject = stream;
+  <style>
+    html, body{
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
     }
+    #camera, #camera--view, #camera--sensor, #camera--output{
+        position: fixed;
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+    }
+    #camera--view, #camera--sensor, #camera--output{
+        transform: scaleX(-1);
+        filter: FlipH;
+    }
+    #camera--trigger{
+        width: 200px;
+        background-color: black;
+        color: white;
+        font-size: 16px;
+        border-radius: 30px;
+        border: none;
+        padding: 15px 20px;
+        text-align: center;
+        box-shadow: 0 5px 10px 0 rgba(0,0,0,0.2);
+        position: fixed;
+        bottom: 30px;
+        left: calc(50% - 100px);
+    }
+    .taken{
+        height: 100px!important;
+        width: 100px!important;
+        transition: all 0.5s ease-in;
+        border: solid 3px white;
+        box-shadow: 0 5px 10px 0 rgba(0,0,0,0.2);
+        top: 20px;
+        right: 20px;
+        z-index: 2;
+    }
+  </style>
+  <body>
+    <main id="camera"> 
+      
+      <canvas id="camera--sensor"></canvas>
+      
+      <video id="camera--view" autoplay playsinline></video> 
+      
+      <img src="//:0" alt="" id="camera--output">        
+
+      <button id="camera--trigger">Take a picture</button> 
+
+    </main>
+
+    <script>
+        var constraints = { video: { facingMode: "user" }, audio: false };
+        const cameraView = document.querySelector("#camera--view"),
+            cameraOutput = document.querySelector("#camera--output"),
+            cameraSensor = document.querySelector("#camera--sensor"),
+            cameraTrigger = document.querySelector("#camera--trigger")
+        function cameraStart() {
+            navigator.mediaDevices
+                .getUserMedia(constraints)
+                .then(function(stream) {
+                track = stream.getTracks()[0];
+                cameraView.srcObject = stream;
+            })
+            .catch(function(error) {
+                console.error("Oops. Something is broken.", error);
+            });
+        }
+        cameraTrigger.onclick = function() {
+            cameraSensor.width = cameraView.videoWidth;
+            cameraSensor.height = cameraView.videoHeight;
+            cameraSensor.getContext("2d").drawImage(cameraView, 0, 0);
+            cameraOutput.src = cameraSensor.toDataURL("image/webp");
+            cameraOutput.classList.add("taken");
+        };
+        window.addEventListener("load", cameraStart, false);
     </script>
   </body>
 </html>
